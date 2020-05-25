@@ -21,19 +21,6 @@ public class UserController {
 		return "redirect:/admin";
 	}
 
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String loginUser(ModelMap model) {
-		return "login";
-	}
-
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ModelAndView checkUser(@RequestParam("email") String login, @RequestParam("password") String password) {
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.addObject("loggedUser", userService.validUser(login, password));
-		modelAndView.setViewName("redirect:/admin");
-		return modelAndView;
-	}
-
 	@RequestMapping(value = "/user", method = RequestMethod.GET)
 	public String homePage(@ModelAttribute("loggedUser") User user, ModelMap model) {
 		model.addAttribute("user", user);

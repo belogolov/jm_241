@@ -46,21 +46,23 @@ public class UserDaoImp implements UserDao {
    @Override
    @SuppressWarnings("unchecked")
    public List<User> listUsers() {
-      TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery("FROM User");
+      TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("FROM User", User.class);
       return query.getResultList();
    }
 
    @Override
+   @SuppressWarnings("unchecked")
    public User getUserById(Long id) {
-      TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("FROM User u WHERE u.id=:id");
+      TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("FROM User u WHERE u.id=:id", User.class);
       query.setParameter("id", id);
       query.setMaxResults(1);
       return query.getSingleResult();
    }
 
    @Override
+   @SuppressWarnings("unchecked")
    public User getUserByEmail(String email) {
-      TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("FROM User u WHERE u.email=:email");
+      TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("FROM User u WHERE u.email=:email", User.class);
       query.setParameter("email", email);
       query.setMaxResults(1);
       User u = query.getSingleResult();
