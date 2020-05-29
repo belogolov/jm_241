@@ -1,5 +1,6 @@
 package hiber.config;
 
+import hiber.model.Role;
 import hiber.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -50,7 +51,7 @@ public class HibernateConfig {
       props.put("hibernate.connection.useUnicode", env.getProperty("hibernate.connection.useUnicode"));
 
       factoryBean.setHibernateProperties(props);
-      factoryBean.setAnnotatedClasses(User.class);
+      factoryBean.setAnnotatedClasses(User.class, Role.class);
       return factoryBean;
    }
 

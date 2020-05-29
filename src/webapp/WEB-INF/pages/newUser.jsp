@@ -8,6 +8,7 @@
 <body>
 <div>
     <div>
+        <%@ include file="logout.jsp" %>
         <div>
             <h2>New user</h2>
         </div>
@@ -25,9 +26,9 @@
             <label>Password:
                 <input type="text" name="password" value="${user.password}"><br/>
             </label>
-            <label>Role:
-                <input type="text" name="role" value="${user.role}"><br/>
-            </label>
+<%--            <label>Roles:--%>
+<%--                <input type="text" name="roles" value="${user.roles}"><br/>--%>
+<%--            </label>--%>
             <h1></h1>
             <div class="row">
                 <div class="form-actions floatRight">

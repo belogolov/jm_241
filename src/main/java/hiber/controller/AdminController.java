@@ -1,5 +1,6 @@
 package hiber.controller;
 
+import hiber.model.Role;
 import hiber.model.User;
 import hiber.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @Controller
 @RequestMapping("/admin")
@@ -43,14 +47,21 @@ public class AdminController {
 
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
 	public String editUser(@RequestParam("id") long id, ModelMap model) {
-		model.addAttribute("user", userService.getUserById(id));
+		User userById = userService.getUserById(id);
+		model.addAttribute("user", userById);
+		StringBuilder builder = new StringBuilder();
+		for(Object r : userById.getRoles().toArray()) {
+			builder.append((Role)r);
+			builder.append(", ");
+		}
+		model.addAttribute("roles", builder.toString());
 		model.addAttribute("title", "Edit user");
 		return "editUser";
 	}
 
 	@RequestMapping(value = "/edit", method = RequestMethod.POST)
-	public String updateUser(User user, ModelMap model) {
-		userService.update(user);
+	public String updateUser(User user, String roles) {
+		userService.update(user, roles);
 		return "redirect:/admin";
 	}
 }

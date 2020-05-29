@@ -1,8 +1,10 @@
 package hiber.dao;
 
 import hiber.model.User;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
 
 public interface UserDao {
    List<User> listUsers();
@@ -19,5 +21,4 @@ public interface UserDao {
 
    void update(User user);
 
-   User validUser(String login, String password);
 }

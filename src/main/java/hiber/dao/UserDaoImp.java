@@ -1,9 +1,12 @@
 package hiber.dao;
 
 import hiber.model.User;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.TypedQuery;
 import java.util.List;
@@ -31,16 +34,10 @@ public class UserDaoImp implements UserDao {
 
    @Override
    public void update(User user) {
-      sessionFactory.getCurrentSession().update(user);
-   }
-
-   @Override
-   public User validUser(String login, String password) {
-      User user = getUserByEmail(login);
-      if (user != null && user.getPassword().equals(password)) {
-         return user;
-      }
-      return null;
+//      sessionFactory.getCurrentSession().saveOrUpdate(user);
+//      Session currentSession = sessionFactory.getCurrentSession();
+//      currentSession.saveOrUpdate(user.getRoles());
+//      currentSession.saveOrUpdate(user);
    }
 
    @Override
@@ -60,13 +57,19 @@ public class UserDaoImp implements UserDao {
    }
 
    @Override
+   @Transactional(readOnly = true)
    @SuppressWarnings("unchecked")
    public User getUserByEmail(String email) {
-      TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("FROM User u WHERE u.email=:email", User.class);
+      Session session;
+      try {
+         session = sessionFactory.getCurrentSession();
+      } catch (HibernateException e) {
+         session = sessionFactory.openSession();
+      }
+      TypedQuery<User> query = session.createQuery("FROM User u WHERE u.email=:email", User.class);
       query.setParameter("email", email);
       query.setMaxResults(1);
-      User u = query.getSingleResult();
-      return u;
+      return query.getSingleResult();
    }
 
 }

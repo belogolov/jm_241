@@ -6,6 +6,7 @@
     <title><spring:message code="global.title" /></title>
 </head>
 <body>
+    <%@ include file="logout.jsp" %>
     <b><spring:message code="global.tableTitle" /></b>
     <br/>
     <form action="admin/add">
@@ -18,7 +19,7 @@
             <th style="border: 1px solid black; text-align: center"><spring:message code="global.user.lastName" /></th>
             <th style="border: 1px solid black; text-align: center"><spring:message code="global.user.email" /></th>
             <th style="border: 1px solid black; text-align: center"><spring:message code="global.user.password" /></th>
-            <th style="border: 1px solid black; text-align: center"><spring:message code="global.user.role" /></th>
+            <th style="border: 1px solid black; text-align: center"><spring:message code="global.user.roles" /></th>
             <th style="border: 1px solid black; text-align: center"><spring:message code="global.edit" /></th>
             <th style="border: 1px solid black; text-align: center"><spring:message code="global.delete" /></th>
         </tr>
@@ -28,7 +29,9 @@
                 <td><c:out value="${user.lastName}"/></td>
                 <td><c:out value="${user.email}"/></td>
                 <td><c:out value="${user.password}"/></td>
-                <td><c:out value="${user.role}"/></td>
+<%--                <td><c:out value="${user.role}"/></td>--%>
+                <td><c:out value="${user.roles}"/></td>
+
 
                 <td style="text-align: center">
                     <form action="admin/edit">

@@ -1,10 +1,15 @@
 package hiber.model;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,17 +21,20 @@ public class User {
    @Column(name = "last_name", nullable=false)
    private String lastName;
 
-   @Column(name = "email", nullable=false)
+   @Column(name = "email", nullable=false, unique = true)
    private String email;
 
    @Column(name = "password", nullable=false)
    private String password;
 
-   @Column(name = "role", nullable=false)
-   private String role;
+   @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+   @JoinTable(name = "users_roles",
+           joinColumns = @JoinColumn(name = "user_id"),
+           inverseJoinColumns = @JoinColumn(name = "role_id"))
+   private Set<Role> roles = new HashSet<>();
 
    public User() {}
-   
+
    public User(String firstName, String lastName, String email, String password) {
       this.firstName = firstName;
       this.lastName = lastName;
@@ -66,19 +74,70 @@ public class User {
       this.email = email;
    }
 
+   @Override
+   public Set<? extends GrantedAuthority> getAuthorities() {
+      return roles;
+   }
+
+   @Override
    public String getPassword() {
       return password;
+   }
+
+   @Override
+   public String getUsername() {
+      return getEmail();
+   }
+
+   @Override
+   public boolean isAccountNonExpired() {
+      return true;
+   }
+
+   @Override
+   public boolean isAccountNonLocked() {
+      return true;
+   }
+
+   @Override
+   public boolean isCredentialsNonExpired() {
+      return true;
+   }
+
+   @Override
+   public boolean isEnabled() {
+      return true;
    }
 
    public void setPassword(String password) {
       this.password = password;
    }
 
-   public String getRole() {
-      return role;
+//   public String getRole() {
+//      return role;
+//   }
+//
+//   public void setRole(String role) {
+//      this.role = role;
+//   }
+
+   public Set<Role> getRoles() {
+      return roles;
    }
 
-   public void setRole(String role) {
-      this.role = role;
+   public void setRoles(Set<Role> roles) {
+      this.roles = roles;
+   }
+
+   @Override
+   public String toString() {
+      return "User{" +
+              "id=" + id +
+              ", firstName='" + firstName + '\'' +
+              ", lastName='" + lastName + '\'' +
+              ", email='" + email + '\'' +
+              ", password='" + password + '\'' +
+              ", roles=" + roles +
+              '}';
    }
 }

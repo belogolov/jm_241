@@ -1,13 +1,20 @@
 package hiber.service;
 
+import hiber.dao.RoleDao;
 import hiber.dao.UserDao;
+import hiber.model.Role;
 import hiber.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImp implements UserService {
@@ -15,9 +22,19 @@ public class UserServiceImp implements UserService {
    @Autowired
    private UserDao userDao;
 
+   @Autowired
+   private RoleDao roleDao;
+
+   @Autowired
+   private PasswordEncoder passwordEncoder;
+
    @Transactional
    @Override
    public void add(User user) {
+      user.setPassword(passwordEncoder.encode(user.getPassword()));
+      Set<Role> roles = new HashSet<>();
+      roles.add(roleDao.getRoleById(2L));
+      user.setRoles(roles);
       userDao.add(user);
    }
 
@@ -35,8 +52,27 @@ public class UserServiceImp implements UserService {
 
    @Transactional
    @Override
-   public void update(User user) {
-      userDao.update(user);
+   public void update(User user, String roles) {
+      Set<Role> collect = Arrays.stream(roles.split(","))
+              .map(s->s.trim())
+              .filter(s -> s.length() > 0)
+              .map(roleDao::getRoleByName)
+              .filter(role -> role != null)
+              .collect(Collectors.toSet());
+      //user.setRoles(collect);
+
+//      userDao.update(user);
+
+      User entity = getUserById(user.getId());
+      if(entity!=null){
+         entity.setFirstName(user.getFirstName());
+         entity.setLastName(user.getLastName());
+         entity.setEmail(user.getEmail());
+         if(!user.getPassword().equals(entity.getPassword())){
+            entity.setPassword(passwordEncoder.encode(user.getPassword()));
+         }
+         entity.setRoles(collect);
+      }
    }
 
    @Transactional(readOnly = true)
@@ -60,9 +96,4 @@ public class UserServiceImp implements UserService {
       return userDao.getUserByEmail(email);
    }
 
-   @Transactional(readOnly = true)
-   @Override
-   public User validUser(String login, String password) {
-      return userDao.validUser(login, password);
-   }
 }
