@@ -50,6 +50,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Bean(name = "localeResolver")
     public LocaleResolver getLocaleResolver()  {
+        //todo - проблемы с кодировкой ру. Настройки сервера влияют? -Dfile.encoding=UTF-8 - не помогло
         CookieLocaleResolver resolver= new CookieLocaleResolver();
         resolver.setCookieDomain("myAppLocaleCookie");
         resolver.setDefaultLocale(Locale.ENGLISH);

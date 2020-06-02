@@ -19,33 +19,33 @@ public class AdminController {
 	@Autowired
 	UserService userService;
 
-	@RequestMapping(method = RequestMethod.GET)
+	@GetMapping
 	public String printUsers(ModelMap model) {
 		model.addAttribute("listUsers", userService.listUsers());
 		model.addAttribute("title", "All users");
 		return "listOfUsers";
 	}
 
-	@RequestMapping(value = "/add", method = RequestMethod.GET)
+	@GetMapping(value = "/add")
 	public String newUser(ModelMap model) {
 		User user = new User();
 		model.addAttribute("user", user);
 		return "newUser";
 	}
 
-	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	@PostMapping(value = "/add")
 	public String addUser(User user, ModelMap model) {
 		userService.add(user);
 		return "redirect:/admin";
 	}
 
-	@RequestMapping(value = "/delete", method = RequestMethod.GET)
+	@GetMapping(value = "/delete")
 	public String deleteUser(@RequestParam("id") long id) {
 		userService.delete(id);
 		return "redirect:/admin";
 	}
 
-	@RequestMapping(value = "/edit", method = RequestMethod.GET)
+	@GetMapping(value = "/edit")
 	public String editUser(@RequestParam("id") long id, ModelMap model) {
 		User userById = userService.getUserById(id);
 		model.addAttribute("user", userById);
@@ -59,7 +59,7 @@ public class AdminController {
 		return "editUser";
 	}
 
-	@RequestMapping(value = "/edit", method = RequestMethod.POST)
+	@PostMapping(value = "/edit")
 	public String updateUser(User user, String roles) {
 		userService.update(user, roles);
 		return "redirect:/admin";
